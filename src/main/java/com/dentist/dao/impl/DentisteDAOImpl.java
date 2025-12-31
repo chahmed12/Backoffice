@@ -24,7 +24,7 @@ public class DentisteDAOImpl implements IDentisteLocal {
     @Override
     public Optional<Dentiste> findByEmail(String email) {
         try {
-            Dentiste d = em.createQuery("SELECT d FROM Patient d WHERE lower(d.emailD)=:e", Dentiste.class)
+            Dentiste d = em.createQuery("SELECT d FROM Dentiste d WHERE lower(d.emailD)=:e", Dentiste.class)
                 .setParameter("e", email.toLowerCase())
                 .getSingleResult();
             return Optional.of(d);

@@ -2,10 +2,13 @@ package com.dentist.dao.interfaces;
 
 import com.dentist.entity.Rendezvous;
 
+import jakarta.ejb.Local;
+
 //import java.time.LocalDate;
 //import java.time.LocalDateTime;
 import java.util.List;
 
+@Local
 public interface IRendezvousLocal{
 
     // CRUD de base

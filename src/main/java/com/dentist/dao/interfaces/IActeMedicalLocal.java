@@ -15,6 +15,7 @@ public interface IActeMedicalLocal {
     void createActeMedical(ActeMedical acte);
     void updateActeMedical(ActeMedical acte);
     void deleteActeMedical(Long id);
+    List<ActeMedical> getActesByRendezvousId(Long idRv);
 
     // Méthodes métier
     //List<ActeMedical> getActesByRendezvous(Long rendezvousId);

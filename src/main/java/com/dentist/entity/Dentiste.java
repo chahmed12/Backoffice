@@ -1,6 +1,9 @@
 package com.dentist.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -31,10 +34,34 @@ public class Dentiste {
 
     @Column(nullable = false, length = 1)
     private String sexeD;
-
+    
+    @Column (length = 8)
     private String telD;
+    
+    public LocalDate getDateNaissance() {
+		return dateNaissance;
+	}
 
+	public void setDateNaissance(LocalDate dateNaissance) {
+		this.dateNaissance = dateNaissance;
+	}
+
+	public String getAdresse() {
+		return adresse;
+	}
+
+	public void setAdresse(String adresse) {
+		this.adresse = adresse;
+	}
+
+	@Column(name = "date_naissance")
+    private LocalDate dateNaissance;
+    
+    @Column(name = "adresse", length = 255)
+    private String adresse;
+     
     @OneToMany(mappedBy = "dentiste")
+    @JsonbTransient
     private List<Rendezvous> rendezvousList;
 
     // =====================
@@ -112,6 +139,7 @@ public class Dentiste {
     public void setTelD(String telephone) {
         this.telD = telephone;
     }
+    
 
     public List<Rendezvous> getRendezvousList() {
         return rendezvousList;

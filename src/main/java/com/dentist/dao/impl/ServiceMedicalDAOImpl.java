@@ -18,7 +18,6 @@ public class ServiceMedicalDAOImpl implements IServiceMedicalLocal{
     @PersistenceContext(unitName = "dentistPU")
     private EntityManager em;
     
-    
     @Override
     public ServiceMedical getServiceMedicalById(Long id) {
     	return em.find(ServiceMedical.class, id);
@@ -27,7 +26,7 @@ public class ServiceMedicalDAOImpl implements IServiceMedicalLocal{
     
     @Override
     public List<ServiceMedical> getAllServicesMedical(){
-    	return em.createQuery("SELECT a FROM ActeMedical a", ServiceMedical.class).getResultList(); 
+    	return em.createQuery("SELECT a FROM ServiceMedical a", ServiceMedical.class).getResultList(); 
     }
     
     @Override
@@ -47,11 +46,7 @@ public class ServiceMedicalDAOImpl implements IServiceMedicalLocal{
     	{
     		em.remove(serviceMedical);
     	}
-    }
-    
-    
-    
-    	
+    }     
 }
     
    

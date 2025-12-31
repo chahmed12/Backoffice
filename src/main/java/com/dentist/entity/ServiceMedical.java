@@ -1,5 +1,6 @@
 package com.dentist.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -20,10 +21,12 @@ public class ServiceMedical {
 
     @Column(columnDefinition = "TEXT")
     private String descriptionSM;
-
+    
+    @Column
     private double tarifSM;
-
-    @OneToMany(mappedBy = "serviceMedical")
+    
+    @JsonbTransient
+    @OneToMany(mappedBy = "serviceMedical",cascade = CascadeType.ALL)
     private List<ActeMedical> actes;
 
 	public Long getNumSM() {

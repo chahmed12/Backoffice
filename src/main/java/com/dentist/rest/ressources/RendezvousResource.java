@@ -1,7 +1,9 @@
 package com.dentist.rest.ressources;
 
 
+import com.dentist.dao.interfaces.IActeMedicalLocal;
 import com.dentist.dao.interfaces.IRendezvousLocal;
+import com.dentist.entity.ActeMedical;
 import com.dentist.entity.Rendezvous;
 
 import java.util.List;
@@ -22,7 +24,8 @@ public class RendezvousResource {
     @EJB
     private IRendezvousLocal rendezvousService;
 
-
+    @EJB
+    private IActeMedicalLocal acteService;
    
     @GET
     public Response getAll() {
@@ -58,5 +61,14 @@ public class RendezvousResource {
         }
         rendezvousService.deleteRendezvous(id);
         return Response.status(Response.Status.NO_CONTENT).build();   
+    }
+    
+    @GET
+    @Path("/{id}/actes")
+    public Response getActesByRendezvous(@PathParam("id") Long idRv) {
+        // Vous devez créer cette méthode dans votre DAO IActeMedicalLocal
+        // Requete SQL : "SELECT a FROM ActeMedical a WHERE a.rendezvous.idRv = :id"
+        List<ActeMedical> actes = acteService.getActesByRendezvousId(idRv);
+        return Response.ok(actes).build();
     }
 }

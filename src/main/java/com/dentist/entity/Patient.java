@@ -1,5 +1,6 @@
 package com.dentist.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -26,7 +27,7 @@ public class Patient{
     @Column(nullable = false, unique = true, length = 100)
     private String emailP;
 
-    @Column(length = 2)
+    @Column(length = 10)
     private String groupSanguinP;
 
     @Column(length = 100)
@@ -35,7 +36,7 @@ public class Patient{
     @Column(nullable = false, length = 1)
     private String sexeP;
 
-    @Temporal(TemporalType.DATE)
+    @Column(name = "date_naissance")
     private LocalDate dateNP;
 
     @Column(length = 100)
@@ -45,7 +46,15 @@ public class Patient{
     private String mdpP;
 
     @OneToMany(mappedBy = "patient")
+    @JsonbTransient
     private List<Rendezvous> rendezvousList;
+    
+    
+    @Column(length = 20) 
+    private String telP;
+    
+    @Column(length = 255)
+    private String adresseP;
 
     // ====== Getters & Setters ======
 
@@ -128,6 +137,8 @@ public class Patient{
     public void setMdpP(String mdpP) {
         this.mdpP = mdpP;
     }
+    
+
 
     public List<Rendezvous> getRendezvousList() {
         return rendezvousList;
@@ -136,6 +147,12 @@ public class Patient{
     public void setRendezvousList(List<Rendezvous> rendezvousList) {
         this.rendezvousList = rendezvousList;
     }
+
+    public String getTelP() { return telP; }
+    public void setTelP(String telP) { this.telP = telP; }
+    
+    public String getAdresseP() { return adresseP; }
+    public void setAdresseP(String adresseP) { this.adresseP = adresseP; }
 
 	@Override
 	public String toString() {

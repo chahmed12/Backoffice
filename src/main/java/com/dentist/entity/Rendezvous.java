@@ -1,9 +1,10 @@
 package com.dentist.entity;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.*;
 
-
-
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -22,21 +23,21 @@ public class Rendezvous {
     @JoinColumn(name = "idD")
     private Dentiste dentiste;
 
-    @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
-    private Date dateRv;
+    
+    @Column(nullable = false)  
+    private LocalDate dateRv;
 
-    @Temporal(TemporalType.TIME)
+    @JsonbDateFormat("HH:mm")
     @Column(nullable = false)
-    private Date heureRv;
+    private LocalTime heureRv;
 
     @Column(nullable = false, length = 100)
     private String statutRv;
 
     @Column(columnDefinition = "TEXT")
     private String detailsRv;
-
-    @OneToMany(mappedBy = "rendezvous")
+    
+    @OneToMany(mappedBy = "rendezvous", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ActeMedical> actes;
 
 	public Long getIdRv() {
@@ -63,19 +64,19 @@ public class Rendezvous {
 		this.dentiste = dentiste;
 	}
 
-	public Date getDateRv() {
+	public LocalDate getDateRv() {
 		return dateRv;
 	}
 
-	public void setDateRv(Date dateRv) {
+	public void setDateRv(LocalDate dateRv) {
 		this.dateRv = dateRv;
 	}
 
-	public Date getHeureRv() {
+	public LocalTime getHeureRv() {
 		return heureRv;
 	}
 
-	public void setHeureRv(Date heureRv) {
+	public void setHeureRv(LocalTime heureRv) {
 		this.heureRv = heureRv;
 	}
 
@@ -100,8 +101,14 @@ public class Rendezvous {
 	}
 
 	public void setActes(List<ActeMedical> actes) {
-		this.actes = actes;
-	}
+        this.actes = actes;
+        // On s'assure que chaque acte pointe bien vers CE rendez-vous
+        if(actes != null) {
+            for(ActeMedical acte : actes) {
+                acte.setRendezvous(this);
+            }
+        }
+    }
 
 	@Override
 	public String toString() {

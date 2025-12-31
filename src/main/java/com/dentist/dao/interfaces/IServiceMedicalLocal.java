@@ -2,8 +2,11 @@ package com.dentist.dao.interfaces;
 
 import com.dentist.entity.ServiceMedical;
 
+import jakarta.ejb.Local;
+
 import java.util.List;
 
+@Local
 public interface IServiceMedicalLocal {
 
     // CRUD de base

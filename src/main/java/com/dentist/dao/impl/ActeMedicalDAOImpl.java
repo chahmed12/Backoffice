@@ -52,6 +52,12 @@ public class ActeMedicalDAOImpl implements IActeMedicalLocal{
     	}
     }
     
+    @Override
+    public List<ActeMedical> getActesByRendezvousId(Long idRv) {
+        return em.createQuery("SELECT a FROM ActeMedical a WHERE a.rendezvous.idRv = :id", ActeMedical.class)
+                 .setParameter("id", idRv)
+                 .getResultList();
+    }
     
     
     	

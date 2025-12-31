@@ -4,11 +4,14 @@ package com.dentist.dao.interfaces;
 
 import com.dentist.entity.Patient;
 
+import jakarta.ejb.Local;
+
 //import com.dentist.entity.Rendezvous;
 
 import java.util.List;
 import java.util.Optional;
 
+@Local
 public interface IPatientLocal {
     Patient getPatientById(Long id);
     List<Patient> getAllPatients();

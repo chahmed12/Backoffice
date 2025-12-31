@@ -8,6 +8,7 @@
         <class>com.dentist.entity.Patient</class>
         <class>com.dentist.entity.Rendezvous</class>
         <class>com.dentist.entity.ServiceMedical</class>
+        <class>com.dentist.entity.Publication</class>
         
 	    
 	    <properties>

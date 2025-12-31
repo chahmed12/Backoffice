@@ -24,57 +24,15 @@ public class AuthResource {
     @EJB
     private IDentisteLocal dentisteService;
 
-    // ==========================================
-    // DTOs (Data Transfer Objects)
-    // ==========================================
-
+    // On garde juste une petite classe pour le Login car ce n'est pas une entité
     public static class LoginRequest {
         public String email;
         public String motDePasse;
     }
 
-    public static class RegisterPatientRequest {
-        public String nom;
-        public String prenom;
-        public String email;
-        public String dateNaissance; // "yyyy-MM-dd"
-        public String groupeSanguin;
-        public String sexe;
-        public String motDePasse;
-        public String recouvrementSocial; 
-    }
-
-    public static class RegisterDentistRequest {
-        public String nom;
-        public String prenom;
-        public String email;
-        public String telephone;
-        public String specialite;
-        public String sexe;
-        public String motDePasse;
-    }
-
-    public static class AuthResponse {
-        public Long id;
-        public String email;
-        public String role;
-        public String nom;
-        public String prenom;
-
-        // Constructeur corrigé : suppression du paramètre 'token' inutile
-        public AuthResponse(Long id, String email, String role, String nom, String prenom) {
-            this.id = id;
-            this.email = email;
-            this.role = role;
-            this.nom = nom;
-            this.prenom = prenom;
-        }
-    }
-
     // ==========================================
-    // Endpoints
+    // LOGIN (Reste identique)
     // ==========================================
-
     @POST
     @Path("/login")
     public Response login(LoginRequest req) {
@@ -83,88 +41,78 @@ public class AuthResource {
                     .entity("{\"message\":\"Email et mot de passe requis\"}").build();
         }
 
-        // 1. Vérification Patient
+        // Vérification Patient (on compare avec mdpP)
         Optional<Patient> optPatient = patientService.findByEmail(req.email);
-        if (optPatient.isPresent()) {
-            Patient p = optPatient.get();
-            // Comparaison simple (SANS HACHAGE)
-            if (req.motDePasse.equals(p.getMdpP())) { 
-                // Appel corrigé : plus de token
-                return Response.ok(new AuthResponse(p.getIdP(), p.getEmailP(), "PATIENT", p.getNomP(), p.getPrenomP())).build();
-            }
+        if (optPatient.isPresent() && req.motDePasse.equals(optPatient.get().getMdpP())) {
+             Patient p = optPatient.get();
+             // On retourne un petit JSON construit manuellement ou un objet anonyme
+             return Response.ok("{\"id\":" + p.getIdP() + 
+                                ", \"role\":\"PATIENT\"" +
+                                ", \"nom\":\"" + p.getNomP() + "\"" +
+                                ", \"prenom\":\"" + p.getPrenomP() + "\"}").build();
         }
 
-        // 2. Vérification Dentiste
+        // Vérification Dentiste (on compare avec mdpD)
         Optional<Dentiste> optDentiste = dentisteService.findByEmail(req.email);
-        if (optDentiste.isPresent()) {
-            Dentiste d = optDentiste.get();
-            // Comparaison simple (SANS HACHAGE)
-            if (req.motDePasse.equals(d.getMdpD())) { 
-                // Appel corrigé : plus de token
-                return Response.ok(new AuthResponse(d.getIdD(), d.getEmailD(), "DENTISTE", d.getNomD(), d.getPrenomD())).build();
-            }
+        if (optDentiste.isPresent() && req.motDePasse.equals(optDentiste.get().getMdpD())) {
+             Dentiste d = optDentiste.get();
+             return Response.ok("{\"id\":" + d.getIdD() + 
+                                ", \"role\":\"DENTISTE\"" +
+                                ", \"nom\":\"" + d.getNomD() + "\"" +
+                                ", \"prenom\":\"" + d.getPrenomD() + "\"}").build();
         }
 
         return Response.status(Response.Status.UNAUTHORIZED)
                 .entity("{\"message\":\"Identifiants incorrects\"}").build();
     }
 
+    // ==========================================
+    // REGISTER PATIENT (Direct avec l'Entité)
+    // ==========================================
     @POST
     @Path("/register/patient")
-    public Response registerPatient(RegisterPatientRequest req) {
-        if (req == null || req.email == null || req.motDePasse == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"Données manquantes\"}").build();
-        }
-
-        if (patientService.findByEmail(req.email).isPresent()) {
-            return Response.status(Response.Status.CONFLICT).entity("{\"message\":\"Email déjà utilisé\"}").build();
-        }
-
-        Patient p = new Patient();
-        p.setNomP(req.nom);
-        p.setPrenomP(req.prenom);
-        p.setEmailP(req.email);
+    public Response registerPatient(Patient patient) { 
+        // 1. Le paramètre est directement l'Entité Patient !
+        // JAX-RS va remplir nomP, prenomP, dateNP, etc. automatiquement
         
-        if(req.dateNaissance != null && !req.dateNaissance.isEmpty()) {
-             try {
-                p.setDateNP(java.time.LocalDate.parse(req.dateNaissance));
-             } catch (Exception e) {
-                 // Gérer l'erreur de date si nécessaire
-             }
+        if (patient == null || patient.getEmailP() == null || patient.getMdpP() == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"message\":\"Email et mot de passe obligatoires\"}").build();
         }
-        p.setGroupSanguinP(req.groupeSanguin);
-        p.setSexeP(req.sexe);
-        p.setRecouvrementP(req.recouvrementSocial);
-        p.setMdpP(req.motDePasse);
 
-        patientService.createPatient(p);
+        // 2. Vérifier si l'email existe déjà
+        if (patientService.findByEmail(patient.getEmailP()).isPresent()) {
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("{\"message\":\"Email déjà utilisé\"}").build();
+        }
+
+        // 3. Sauvegarder (C'est tout !)
+        // Note: La date "2000-01-01" envoyée par le front sera convertie 
+        // automatiquement en LocalDate par JSON-B
+        patientService.createPatient(patient);
 
         return Response.status(Response.Status.CREATED)
                 .entity("{\"message\":\"Patient créé avec succès\"}").build();
     }
 
+    // ==========================================
+    // REGISTER DENTISTE (Direct avec l'Entité)
+    // ==========================================
     @POST
     @Path("/register/dentiste")
-    public Response registerDentiste(RegisterDentistRequest req) {
-        if (req == null || req.email == null || req.motDePasse == null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity("{\"message\":\"Données manquantes\"}").build();
+    public Response registerDentiste(Dentiste dentiste) {
+        
+        if (dentiste == null || dentiste.getEmailD() == null || dentiste.getMdpD() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
 
-        if (dentisteService.findByEmail(req.email).isPresent()) {
+        if (dentisteService.findByEmail(dentiste.getEmailD()).isPresent()) {
              return Response.status(Response.Status.CONFLICT).entity("{\"message\":\"Email déjà utilisé\"}").build();
         }
 
-        Dentiste d = new Dentiste();
-        d.setNomD(req.nom);
-        d.setPrenomD(req.prenom);
-        d.setEmailD(req.email);
-        d.setTelD(req.telephone);
-        d.setSpecialiteD(req.specialite);
-        d.setMdpD(req.motDePasse);
-
-        dentisteService.createDentiste(d);
+        dentisteService.createDentiste(dentiste);
 
         return Response.status(Response.Status.CREATED)
-                .entity("{\"message\":\"Compte professionnel créé avec succès\"}").build();
+                .entity("{\"message\":\"Compte professionnel créé\"}").build();
     }
 }

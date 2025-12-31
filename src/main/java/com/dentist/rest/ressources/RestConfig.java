@@ -25,6 +25,8 @@ public class RestConfig extends Application {
         resources.add(RendezvousResource.class);
         resources.add(ServiceMedicalResource.class);
         resources.add(AuthResource.class);
+        resources.add(PublicationRessource.class);
+        
 
        
         

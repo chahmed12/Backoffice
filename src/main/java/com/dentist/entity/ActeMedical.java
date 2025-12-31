@@ -1,6 +1,7 @@
 package com.dentist.entity;
 
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 
@@ -13,6 +14,7 @@ public class ActeMedical {
     private Long idAM;
 
     @ManyToOne(optional = false)
+    @JsonbTransient
     @JoinColumn(name = "idRv")
     private Rendezvous rendezvous;
 
@@ -22,7 +24,8 @@ public class ActeMedical {
 
     @Column(columnDefinition = "TEXT")
     private String descriptionAM;
-
+    
+    @Column
     private double tarifAM;
 
     // Getters & Setters
