@@ -102,7 +102,7 @@ public class Rendezvous {
 
 	public void setActes(List<ActeMedical> actes) {
         this.actes = actes;
-        // On s'assure que chaque acte pointe bien vers CE rendez-vous
+        
         if(actes != null) {
             for(ActeMedical acte : actes) {
                 acte.setRendezvous(this);

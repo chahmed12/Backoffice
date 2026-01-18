@@ -95,5 +95,5 @@ public class Publication {
 		this.fichier = fichier;
 	}
 
-    // ... générez les getters et setters ...
+    
 }

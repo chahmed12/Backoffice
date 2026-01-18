@@ -46,7 +46,22 @@ public class ServiceMedicalDAOImpl implements IServiceMedicalLocal{
     	{
     		em.remove(serviceMedical);
     	}
-    }     
+    }    
+    
+ 
+    @Override
+    public void removeServiceMedical(Long id) {
+        ServiceMedical managedService = em.find(ServiceMedical.class, id);
+        if (managedService != null) {
+           
+            em.createQuery("DELETE FROM ActeMedical a WHERE a.serviceMedical.id = :sId")
+              .setParameter("sId", id)
+              .executeUpdate();
+
+            
+            em.remove(managedService);
+        }
+    }
 }
     
    

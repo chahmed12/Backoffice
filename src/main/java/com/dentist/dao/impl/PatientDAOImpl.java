@@ -63,7 +63,7 @@ public class PatientDAOImpl implements IPatientLocal{
 
     @Override
     public Optional<Patient> findPatientsByName(String name) {
-        // impl si tu as username; sinon laisse Optional.empty()
+        
         return Optional.empty();
     }
 

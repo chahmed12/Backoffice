@@ -64,9 +64,7 @@ public class Dentiste {
     @JsonbTransient
     private List<Rendezvous> rendezvousList;
 
-    // =====================
-    // Getters & Setters
-    // =====================
+
 
     public Long getIdD() {
         return idD;

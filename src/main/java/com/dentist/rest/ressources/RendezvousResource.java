@@ -66,9 +66,32 @@ public class RendezvousResource {
     @GET
     @Path("/{id}/actes")
     public Response getActesByRendezvous(@PathParam("id") Long idRv) {
-        // Vous devez créer cette méthode dans votre DAO IActeMedicalLocal
-        // Requete SQL : "SELECT a FROM ActeMedical a WHERE a.rendezvous.idRv = :id"
+
         List<ActeMedical> actes = acteService.getActesByRendezvousId(idRv);
         return Response.ok(actes).build();
+    }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response update(Rendezvous rdvRecu) {
+        
+        if (rdvRecu.getIdRv() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("ID manquant").build();
+        }
+
+        
+        Rendezvous rdvExistant = rendezvousService.getRendezvousById(rdvRecu.getIdRv());
+        
+        if (rdvExistant == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+
+        rdvExistant.setStatutRv(rdvRecu.getStatutRv());
+        
+
+        rendezvousService.updateRendezvous(rdvExistant);
+
+        return Response.ok(rdvExistant).build();
     }
 }

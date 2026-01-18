@@ -19,8 +19,7 @@ public interface IPatientLocal {
     void updatePatient(Patient patient);
     void deletePatient(Long id);
     public Optional<Patient> findPatientsByName(String nom);
-    //List<Rendezvous> getRendezvousByPatient(Long patientId);
-    //boolean exists(Long id);
+
     public Optional<Patient> findByEmail(String email);
     public Optional<Patient> findByEmailOrUsername(String login);
 }

@@ -83,5 +83,5 @@ public class ServiceMedical {
 		this.actes = actes;
 	}
 
-    // Getters & Setters
+    
 }

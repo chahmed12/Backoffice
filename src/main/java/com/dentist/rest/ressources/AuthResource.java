@@ -24,15 +24,13 @@ public class AuthResource {
     @EJB
     private IDentisteLocal dentisteService;
 
-    // On garde juste une petite classe pour le Login car ce n'est pas une entité
+    
     public static class LoginRequest {
         public String email;
         public String motDePasse;
     }
 
-    // ==========================================
-    // LOGIN (Reste identique)
-    // ==========================================
+
     @POST
     @Path("/login")
     public Response login(LoginRequest req) {
@@ -41,18 +39,18 @@ public class AuthResource {
                     .entity("{\"message\":\"Email et mot de passe requis\"}").build();
         }
 
-        // Vérification Patient (on compare avec mdpP)
+       
         Optional<Patient> optPatient = patientService.findByEmail(req.email);
         if (optPatient.isPresent() && req.motDePasse.equals(optPatient.get().getMdpP())) {
              Patient p = optPatient.get();
-             // On retourne un petit JSON construit manuellement ou un objet anonyme
+             
              return Response.ok("{\"id\":" + p.getIdP() + 
                                 ", \"role\":\"PATIENT\"" +
                                 ", \"nom\":\"" + p.getNomP() + "\"" +
                                 ", \"prenom\":\"" + p.getPrenomP() + "\"}").build();
         }
 
-        // Vérification Dentiste (on compare avec mdpD)
+
         Optional<Dentiste> optDentiste = dentisteService.findByEmail(req.email);
         if (optDentiste.isPresent() && req.motDePasse.equals(optDentiste.get().getMdpD())) {
              Dentiste d = optDentiste.get();
@@ -66,38 +64,30 @@ public class AuthResource {
                 .entity("{\"message\":\"Identifiants incorrects\"}").build();
     }
 
-    // ==========================================
-    // REGISTER PATIENT (Direct avec l'Entité)
-    // ==========================================
+
     @POST
     @Path("/register/patient")
     public Response registerPatient(Patient patient) { 
-        // 1. Le paramètre est directement l'Entité Patient !
-        // JAX-RS va remplir nomP, prenomP, dateNP, etc. automatiquement
+
         
         if (patient == null || patient.getEmailP() == null || patient.getMdpP() == null) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("{\"message\":\"Email et mot de passe obligatoires\"}").build();
         }
 
-        // 2. Vérifier si l'email existe déjà
+       
         if (patientService.findByEmail(patient.getEmailP()).isPresent()) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("{\"message\":\"Email déjà utilisé\"}").build();
         }
 
-        // 3. Sauvegarder (C'est tout !)
-        // Note: La date "2000-01-01" envoyée par le front sera convertie 
-        // automatiquement en LocalDate par JSON-B
+
         patientService.createPatient(patient);
 
         return Response.status(Response.Status.CREATED)
                 .entity("{\"message\":\"Patient créé avec succès\"}").build();
     }
 
-    // ==========================================
-    // REGISTER DENTISTE (Direct avec l'Entité)
-    // ==========================================
     @POST
     @Path("/register/dentiste")
     public Response registerDentiste(Dentiste dentiste) {

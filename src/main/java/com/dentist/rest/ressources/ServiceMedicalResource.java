@@ -45,4 +45,13 @@ public class ServiceMedicalResource {
         serviceMedical.createServiceMedical(service);
         return Response.status(Response.Status.CREATED).entity(service).build();
     }
+    
+    
+    @DELETE
+    @Path("/{id}")
+    public Response delete(@PathParam("id") Long id) {
+        
+        serviceMedical.removeServiceMedical(id); 
+        return Response.noContent().build();
+    }
 }

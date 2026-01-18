@@ -56,8 +56,7 @@ public class Patient{
     @Column(length = 255)
     private String adresseP;
 
-    // ====== Getters & Setters ======
-
+    
     public Long getIdP() {
         return idP;
     }

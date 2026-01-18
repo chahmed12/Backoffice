@@ -18,6 +18,5 @@ public interface IDentisteLocal {
     void updateDentiste(Dentiste dentiste);
     void deleteDentiste(Long id);
     public Optional<Dentiste> findByEmail(String email);
-    //List<Rendezvous> getRendezvousByDentiste(Long dentisteId);
-    //boolean exists(Long id);
+    
 }

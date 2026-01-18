@@ -28,7 +28,7 @@ public class ActeMedical {
     @Column
     private double tarifAM;
 
-    // Getters & Setters
+  
 
     public Long getIdAM() {
         return idAM;

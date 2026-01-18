@@ -9,7 +9,7 @@ import java.util.List;
 @Local
 public interface IActeMedicalLocal {
 
-    // CRUD de base
+
     ActeMedical getActeMedicalById(Long id);
     List<ActeMedical> getAllActesMedicals();
     void createActeMedical(ActeMedical acte);
@@ -17,8 +17,5 @@ public interface IActeMedicalLocal {
     void deleteActeMedical(Long id);
     List<ActeMedical> getActesByRendezvousId(Long idRv);
 
-    // Méthodes métier
-    //List<ActeMedical> getActesByRendezvous(Long rendezvousId);
-    //List<ActeMedical> getActesByServiceMedical(Long serviceId);
-    //double getTotalTarifByRendezvous(Long rendezvousId);
+
 }
